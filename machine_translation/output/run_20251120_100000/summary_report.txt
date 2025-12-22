@@ -1,0 +1,163 @@
+================================================================================
+TRANSLATION AND POST-EDITING SUMMARY REPORT
+================================================================================
+Generated: 20251120_100000
+Total records processed: 616
+================================================================================
+
+1. DATASET COMPOSITION
+--------------------------------------------------------------------------------
+
+Records by source language:
+  EN:  130 (21.10%)
+  ES:  142 (23.05%)
+  IT:  344 (55.84%)
+
+Records by category:
+  Politician               :   44 ( 7.14%)
+  Building                 :   44 ( 7.14%)
+  Airport                  :   43 ( 6.98%)
+  Company                  :   43 ( 6.98%)
+  Athlete                  :   43 ( 6.98%)
+  Monument                 :   42 ( 6.82%)
+  University               :   42 ( 6.82%)
+  ComicsCharacter          :   41 ( 6.66%)
+  City                     :   40 ( 6.49%)
+  Artist                   :   37 ( 6.01%)
+  Food                     :   34 ( 5.52%)
+  Astronaut                :   31 ( 5.03%)
+  River                    :   30 ( 4.87%)
+  SportsTeam               :   30 ( 4.87%)
+  Model                    :   27 ( 4.38%)
+  WrittenWork              :   19 ( 3.08%)
+  CelestialBody            :   14 ( 2.27%)
+  MeanOfTransportation     :   12 ( 1.95%)
+
+Records by type:
+  rare_claims              :  141 (22.89%)
+  long_tail_en             :  128 (20.78%)
+  long_tail_it             :  120 (19.48%)
+  long_tail_es             :  119 (19.32%)
+  top_head                 :  108 (17.53%)
+
+Records by configuration:
+  conf_1         :  363 (58.93%)
+  conf_2         :  133 (21.59%)
+  conf_3         :  120 (19.48%)
+
+Triples per record:
+  Min:     1
+  Max:     6
+  Average: 2.11
+
+
+2. TRANSLATION STATISTICS
+--------------------------------------------------------------------------------
+
+EN Translations:
+  Total records:        616
+  Gold annotations:     130 (21.10%)
+  Translated:           486 (78.90%)
+
+ES Translations:
+  Total records:        616
+  Gold annotations:     142 (23.05%)
+  Translated:           474 (76.95%)
+
+IT Translations:
+  Total records:        616
+  Gold annotations:     344 (55.84%)
+  Translated:           272 (44.16%)
+
+
+3. XCOMET QUALITY ASSESSMENT
+--------------------------------------------------------------------------------
+
+EN - XCOMET Scores:
+  Sentence-level scores (486 translations):
+    Min:     0.2449
+    Max:     1.0003
+    Average: 0.6796
+    Median:  0.6678
+
+  Quality distribution:
+    Excellent   :   98 (20.16%)
+    Good        :  247 (50.82%)
+    Moderate    :  132 (27.16%)
+    Weak        :    9 ( 1.85%)
+
+  System-level scores (486 translations):
+    Average: 0.6796
+
+  Error spans detected: 389
+    Average per translation: 0.80
+  Error severity breakdown:
+    Minor       :  124 (31.88%)
+    Major       :   13 ( 3.34%)
+    Critical    :  252 (64.78%)
+
+ES - XCOMET Scores:
+  Sentence-level scores (474 translations):
+    Min:     0.3030
+    Max:     1.0003
+    Average: 0.6875
+    Median:  0.6721
+
+  Quality distribution:
+    Excellent   :  119 (25.11%)
+    Good        :  201 (42.41%)
+    Moderate    :  150 (31.65%)
+    Weak        :    4 ( 0.84%)
+
+  System-level scores (474 translations):
+    Average: 0.6875
+
+  Error spans detected: 478
+    Average per translation: 1.01
+  Error severity breakdown:
+    Minor       :  186 (38.91%)
+    Major       :   23 ( 4.81%)
+    Critical    :  269 (56.28%)
+
+IT - XCOMET Scores:
+  Sentence-level scores (272 translations):
+    Min:     0.3545
+    Max:     0.9988
+    Average: 0.6599
+    Median:  0.6670
+
+  Quality distribution:
+    Excellent   :   44 (16.18%)
+    Good        :  135 (49.63%)
+    Moderate    :   84 (30.88%)
+    Weak        :    9 ( 3.31%)
+
+  System-level scores (272 translations):
+    Average: 0.6599
+
+  Error spans detected: 257
+    Average per translation: 0.94
+  Error severity breakdown:
+    Minor       :   69 (26.85%)
+    Major       :    9 ( 3.50%)
+    Critical    :  179 (69.65%)
+
+
+4. XTOWER ERROR ANALYSIS
+--------------------------------------------------------------------------------
+
+EN - xTower Error Analysis:
+  Translations analyzed: 486
+  Translations with corrections: 486 (100.00%)
+  Translations with full output: 486 (100.00%)
+
+ES - xTower Error Analysis:
+  Translations analyzed: 474
+  Translations with corrections: 474 (100.00%)
+  Translations with full output: 474 (100.00%)
+
+IT - xTower Error Analysis:
+  Translations analyzed: 272
+  Translations with corrections: 272 (100.00%)
+  Translations with full output: 272 (100.00%)
+
