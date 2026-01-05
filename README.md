@@ -5,16 +5,16 @@ This repository collects resources, data processing scripts, and experiments for
 
 ## Repository structure
 
-- [TailNLG Dataset](https://github.com/liadraetta/TailNLG-benchmark/tree/6648416436351fb8c356d2ba3f55122858fbeef5/TailNLG%20Dataset)  
+- [TailNLG Dataset] 
   Dataset folder
 
-- [Extraction](https://github.com/liadraetta/TailNLG-benchmark/tree/6648416436351fb8c356d2ba3f55122858fbeef5/Extraction)  
+- [Extraction]
   Data extraction and preprocessing scripts. Use these to generate dataset subsets, cleaning, and feature extraction pipelines.
 
-- [machine_translation](https://github.com/liadraetta/TailNLG-benchmark/tree/6648416436351fb8c356d2ba3f55122858fbeef5/machine_translation)  
+- [machine_translation]
   Scripts, configurations, and possibly model checkpoints for machine translation experiments included in the benchmark.
 
-- [Experiments](https://github.com/liadraetta/TailNLG-benchmark/tree/6648416436351fb8c356d2ba3f55122858fbeef5/Experiments)  
+- [Experiments]
   Experiment definitions, evaluation scripts, logs, and results. Reproducible training/evaluation pipelines and hyperparameter records should live here.
 
   
