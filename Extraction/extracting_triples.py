@@ -46,7 +46,7 @@ CONDITIONAL_BLACKLIST = {
 sparql = SPARQLWrapper("https://query.wikidata.org/sparql")
 sparql.setReturnFormat(JSON)
 sparql.setMethod("POST")
-sparql.addCustomHttpHeader("User-Agent", "https://github.com/liadraetta")
+sparql.addCustomHttpHeader("")
 
 def run_sparql(query: str):
     """Run a SPARQL query with exponential backoff + jitter; return bindings list."""

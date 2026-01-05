@@ -5,7 +5,7 @@ class PopularityRetriever:
 
     def __init__(self):
         self.header = {
-        "User-Agent": "MyWikiBot/1.0 (https://marcostranisci.github.io/; marcoantonio.stranisci@unito.it)"
+        "User-Agent": ""
     }
         self.languages = ["en", "it","es"]
         self.pageviews_api = "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article"
