@@ -4,10 +4,6 @@ from typing import Optional, List
 
 from .config import DATASETS_DIR, EXCLUDED_TRIPLES
 
-# todo: come formattare le triple?
-# - lasciarle così 
-# - con |
-# - con tag <s></s> <o></o> <p></p>
 
 class WebNLGLoader:
     DATASETS = {

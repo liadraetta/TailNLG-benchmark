@@ -285,11 +285,7 @@ def main():
             output_dir=ACTUAL_OUTPUT_DIR
         )
     
-    # Delay before XCOMET
-    #if args.start_from == 'translation':
-    #    logger.info("\nWaiting 5 seconds before starting XCOMET...")
-    #    time.sleep(5)
-    
+
     # PHASE 2A: XCOMET scoring
     if args.start_from in ['translation', 'xcomet']:
         logger.info("\n" + "=" * 80)
@@ -319,12 +315,7 @@ def main():
         logger.info("\n" + "=" * 80)
         logger.info("PHASE 2A: SKIPPING XCOMET (already computed in previous run)")
         logger.info("=" * 80)
-    
-    # Delay before xTower
-    #if args.start_from in ['translation', 'xcomet']:
-    #    logger.info("\nWaiting 5 seconds before starting xTower...")
-    #    time.sleep(5)
-    
+
     # PHASE 2B: xTower analysis
     if args.start_from in ['translation', 'xcomet', 'xtower']:
         logger.info("\n" + "=" * 80)

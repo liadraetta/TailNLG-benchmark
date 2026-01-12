@@ -160,42 +160,7 @@ class VerbalizationEvaluator:
         save_individual_scores: bool = True,
         skip_existing: bool = True
     ) -> Dict[str, Any]:
-        """
-        Evaluate a single JSON file.
-        
-        **Important**: This method evaluates EACH generation individually against its reference(s).
-        If you have multiple generations per triple (e.g., generation_id=0,1,2), 
-        each one is scored separately, and the results show statistics across ALL individual scores.
-        
-        **Multiple References Support**: 
-        - Single reference: reference_key contains a string (e.g., TailNLG)
-        - Multiple references: reference_key contains a list of strings (e.g., WebNLG test set)
-        - For multiple references, the score is computed against each reference and the MAXIMUM is taken
-          (following standard practice for BLEU, BERTScore, etc.)
-        
-        Example:
-            - Triple A with 3 generations → 3 scores computed
-            - Triple B with 3 generations → 3 scores computed
-            - Total: 6 individual scores
-            - Results show: mean, std, min, max of these 6 scores
-        
-        Args:
-            file_path: Path to the JSON file
-            prediction_key: Key in JSON for predicted text (default: 'prediction')
-            reference_key: Key in JSON for reference text (default: 'actual')
-                          Can be a string or list of strings (multiple references)
-            save_individual_scores: Whether to save scores back to the JSON file (default: False)
-            skip_existing: If True, skip metrics that are already computed in the file (default: True)
-        
-        Returns:
-            Dictionary with evaluation results organized by language and metric.
-            Each metric contains:
-                - num_samples: Total number of generations evaluated
-                - scores: List of all individual scores
-                - average: Mean across all generations
-                - std: Standard deviation
-                - min/max: Best/worst generation
-        """
+
         print(f"\nEvaluating: {file_path.name}")
         
         # Load data
@@ -303,23 +268,7 @@ class VerbalizationEvaluator:
         references: List,  # Can be List[str] or List[List[str]]
         language: str
     ) -> List[float]:
-        """
-        Compute a specific metric for a batch of prediction-reference pairs.
-        This is MUCH faster than computing metrics one-by-one!
-        
-        Supports both single and multiple references per prediction:
-        - Single reference: references = ["ref1", "ref2", ...]
-        - Multiple references: references = [["ref1a", "ref1b"], ["ref2a", "ref2b"], ...]
-        
-        Args:
-            metric_name: Name of the metric ('bertscore', 'bertscore_rescaled', 'bleu', 'chrf', 'meteor')
-            predictions: List of predicted texts
-            references: List of reference texts (can be single strings or lists of strings)
-            language: Language code (used for BERTScore)
-        
-        Returns:
-            List of metric scores (one per prediction-reference pair)
-        """
+
         if language == 'it-PE':
             language = 'it'
 
@@ -528,19 +477,7 @@ class VerbalizationEvaluator:
         save_individual_scores: bool = True,
         skip_existing: bool = True
     ) -> Dict[str, Dict[str, Any]]:
-        """
-        Evaluate multiple JSON files.
-        
-        Args:
-            file_paths: List of paths to JSON files
-            prediction_key: Key in JSON for predicted text
-            reference_key: Key in JSON for reference text
-            save_individual_scores: Whether to save scores back to JSON files (default: False)
-            skip_existing: If True, skip metrics already computed in files (default: True)
-        
-        Returns:
-            Dictionary mapping file names to their evaluation results
-        """
+
         all_results = {}
         
         for file_path in file_paths:
@@ -558,13 +495,7 @@ class VerbalizationEvaluator:
     
     @staticmethod
     def save_results(results: Dict[str, Any], output_path: Path):
-        """
-        Save evaluation results to JSON file.
-        
-        Args:
-            results: Evaluation results dictionary
-            output_path: Path to save the JSON file
-        """
+
         with open(output_path, 'w', encoding='utf-8') as f:
             json.dump(results, f, indent=2, ensure_ascii=False)
         
@@ -576,17 +507,7 @@ class VerbalizationEvaluator:
         metric: str = 'bertscore',
         language: str = 'en'
     ) -> Dict[str, float]:
-        """
-        Compare different methods for a specific metric and language.
-        
-        Args:
-            results: Results dictionary from evaluate_multiple_files
-            metric: Metric to compare
-            language: Language to compare
-        
-        Returns:
-            Dictionary mapping method names to their average scores
-        """
+
         comparison = {}
         
         for method_name, method_results in results.items():
@@ -604,17 +525,7 @@ class VerbalizationEvaluator:
         metric: str = 'bertscore',
         language: str = 'en'
     ) -> tuple[str, float]:
-        """
-        Find the best performing method for a specific metric and language.
-        
-        Args:
-            results: Results dictionary from evaluate_multiple_files
-            metric: Metric to optimize
-            language: Language to consider
-        
-        Returns:
-            Tuple of (method_name, score)
-        """
+
         comparison = VerbalizationEvaluator.compare_methods(results, metric, language)
         
         if not comparison:
@@ -630,45 +541,8 @@ class VerbalizationEvaluator:
         metric2: str,
         group_by: Optional[str] = None
     ) -> Dict[str, Any]:
-        """
-        Compute Pearson and Spearman correlation between two metrics.
-        
-        Calculates correlation coefficients between individual scores of two different metrics
-        in the same file. Optionally, correlations can be computed separately for different groups
-        (e.g., by language, type, category).
-        
-        Args:
-            file_path: Path to the JSON file with evaluation results
-            metric1: First metric name (e.g., 'bertscore', 'bleu')
-            metric2: Second metric name (e.g., 'chrf', 'meteor')
-            group_by: Optional field to group correlations by (e.g., 'language', 'type', 'category')
-                     If None, computes correlation across all samples
-        
-        Returns:
-            Dictionary with correlation results:
-            - If group_by is None:
-                {
-                    'n': number of samples,
-                    'pearson': {'r': correlation, 'p_value': p-value},
-                    'spearman': {'rho': correlation, 'p_value': p-value}
-                }
-            - If group_by is specified:
-                {
-                    'group1': {'n': ..., 'pearson': {...}, 'spearman': {...}},
-                    'group2': {...},
-                    ...
-                    'overall': {'n': ..., 'pearson': {...}, 'spearman': {...}}
-                }
-        
-        Example:
-            >>> correlations = VerbalizationEvaluator.compute_metric_correlations(
-            ...     file_path=Path('results.json'),
-            ...     metric1='bertscore',
-            ...     metric2='bleu',
-            ...     group_by='language'
-            ... )
-            >>> print(f"English: Pearson r = {correlations['en']['pearson']['r']:.3f}")
-        """
+
+
         print(f"\nComputing correlation between {metric1} and {metric2}")
         print(f"File: {file_path.name}")
         if group_by:
@@ -808,34 +682,7 @@ class VerbalizationEvaluator:
         file_path: Path,
         metrics: Optional[List[str]] = None
     ) -> Dict[str, Any]:
-        """
-        Compute basic statistics overall and by language.
-        
-        Args:
-            file_path: Path to the JSON file with evaluation results
-            metrics: List of metric keys to analyze (if None, auto-detect from first entry)
-                    Auto-detection includes all fields ending with '_score'
-        
-        Returns:
-            Dictionary with statistics:
-            {
-                'overall': {
-                    'n': total number of samples,
-                    'bertscore': {'mean': ..., 'std': ..., 'min': ..., 'max': ...},
-                    'bleu': {...},
-                    ...
-                },
-                'by_language': {
-                    'en': {
-                        'n': ...,
-                        'bertscore': {...},
-                        ...
-                    },
-                    'es': {...},
-                    'it': {...}
-                }
-            }
-        """
+
         print(f"\nComputing statistics for: {file_path.name}")
         
         # Load data
@@ -926,17 +773,7 @@ class VerbalizationEvaluator:
         metrics: Optional[List[str]] = None,
         xml_path: Optional[Path] = None
     ) -> Dict[str, Any]:
-        """
-        Compute basic statistics overall and by language, filtering only long_tail entries.
-        
-        Args:
-            file_path: Path to the JSON file with evaluation results
-            metrics: List of metric keys to analyze (if None, auto-detect from first entry)
-            xml_path: Path to longTailWebNLG-v1.0.xml file (if None, uses default path)
-        
-        Returns:
-            Dictionary with statistics (same format as compute_statistics)
-        """
+
         print(f"\nComputing statistics for LONG_TAIL only: {file_path.name}")
         
         # Load metadata mapping from XML
@@ -1044,18 +881,7 @@ class VerbalizationEvaluator:
         metrics: Optional[List[str]] = None,
         output_path: Optional[Path] = None
     ) -> str:
-        """
-        Format aggregate statistics (from compute_statistics or compute_statistics_longtail_only) 
-        into readable tables.
-        
-        Args:
-            stats: Statistics dictionary from compute_statistics or compute_statistics_longtail_only
-            metrics: List of metrics to include (if None, auto-detect)
-            output_path: Optional path to save tables as text file
-        
-        Returns:
-            Formatted tables as string
-        """
+
         lines = []
         lines.append("=" * 120)
         lines.append("AGGREGATE STATISTICS")
@@ -1139,44 +965,7 @@ class VerbalizationEvaluator:
         output_json_path: Optional[Path] = None,
         output_md_path: Optional[Path] = None
     ) -> Dict[str, Any]:
-        """
-        Compute detailed statistics grouped by quality field (silver vs gold).
-        
-        Analyzes verbalization results and compares performance between silver and gold quality.
-        Quality information is loaded from the LongTail WebNLG XML file using eid mapping.
-        Optionally saves results to JSON and formatted Markdown files.
-        
-        Args:
-            file_path: Path to the JSON file with evaluation results
-            metrics: List of metric keys to analyze (if None, auto-detect from first entry)
-                    Auto-detection includes all fields ending with '_score'
-            xml_path: Path to longTailWebNLG-v1.0.xml file (if None, uses default path)
-            output_json_path: Optional path to save JSON results
-            output_md_path: Optional path to save Markdown tables
-        
-        Returns:
-            Dictionary with statistics by quality:
-            {
-                'by_quality': {
-                    'silver': {
-                        'bertscore': {'n': ..., 'mean': ..., 'std': ..., 'scores': [...]},
-                        'bleu': {...},
-                        ...
-                    },
-                    'gold': {...}
-                },
-                'by_quality_language': {
-                    'silver|en': {...},
-                    'gold|en': {...},
-                    ...
-                },
-                'by_quality_type': {
-                    'silver|long_tail': {...},
-                    'gold|top_head': {...},
-                    ...
-                }
-            }
-        """
+
         print(f"\nComputing quality statistics for: {file_path.name}")
         
         # Load metadata mapping from XML (includes quality field)
@@ -1372,16 +1161,7 @@ class VerbalizationEvaluator:
         stats: Dict[str, Any],
         metrics: Optional[List[str]] = None
     ) -> str:
-        """
-        Format quality statistics into readable Markdown comparison tables.
-        
-        Args:
-            stats: Statistics dictionary from compute_statistics_by_quality
-            metrics: List of metrics to include (if None, use all available)
-        
-        Returns:
-            Formatted Markdown tables as string
-        """
+
         lines = []
         lines.append("# Verbalization Quality Analysis: Silver vs Gold\n")
         lines.append("=" * 100)
@@ -1525,31 +1305,7 @@ class VerbalizationEvaluator:
         metrics: Optional[List[str]] = None,
         xml_path: Optional[Path] = None
     ) -> Dict[str, Any]:
-        """
-        Compute detailed statistics grouped by metadata fields.
-        
-        Generates statistics tables for:
-        - By language (en, es, it)
-        - By type (top_head, long_tail, rare_claims)
-        - By subtype (top_head, rare_claims, long_tail_it, long_tail_es, long_tail_en)
-        - By category (Astronaut, Artist, Athlete, etc.)
-        - By category-type-subtype combinations (detailed breakdown)
-        
-        Automatically detects and includes all available metrics from the JSON file,
-        including quality metrics (bertscore, bleu, chrf, meteor, rouge) and 
-        perplexity scores if present.
-        
-        Args:
-            file_path: Path to the JSON file with evaluation results
-            prediction_key: Key for predictions in JSON
-            reference_key: Key for references in JSON
-            metrics: List of metric keys to analyze (if None, auto-detect from first entry)
-                    Auto-detection includes all fields ending with '_score'
-            xml_path: Path to longTailWebNLG-v1.0.xml file (if None, uses default path)
-        
-        Returns:
-            Dictionary with statistics tables
-        """
+
         print(f"\nComputing metadata statistics for: {file_path.name}")
         
         # Load metadata mapping from XML
@@ -1689,18 +1445,7 @@ class VerbalizationEvaluator:
         metrics: Optional[List[str]] = None,
         output_path: Optional[Path] = None
     ) -> str:
-        """
-        Format statistics into readable comparison tables.
-        Creates separate tables for language, type, subtype, and category comparisons.
-        
-        Args:
-            stats: Statistics dictionary from compute_statistics_by_metadata
-            metrics: List of metrics to include (if None, use all available)
-            output_path: Optional path to save tables as text file
-        
-        Returns:
-            Formatted tables as string
-        """
+
         lines = []
         lines.append("=" * 120)
         lines.append("STATISTICS BY METADATA - COMPARISON TABLES")
@@ -2055,16 +1800,7 @@ class VerbalizationEvaluator:
         results: Dict[str, Dict[str, Any]],
         output_path: Optional[Path] = None
     ) -> str:
-        """
-        Generate a text summary of evaluation results.
-        
-        Args:
-            results: Results dictionary from evaluate_multiple_files
-            output_path: Optional path to save the summary as text file
-        
-        Returns:
-            Summary string
-        """
+
         summary_lines = []
         summary_lines.append("=" * 80)
         summary_lines.append("EVALUATION SUMMARY")
@@ -2113,19 +1849,7 @@ class VerbalizationEvaluator:
 
     @staticmethod
     def extract_model_name_from_filename(file_path: Path) -> Optional[str]:
-        """
-        Extract model name from filename.
-        
-        Expected format: *_<model_name>.json
-        Example: tail_zero_shot_meta-llama_Llama-3.2-3B-Instruct.json
-                 -> meta-llama/Llama-3.2-3B-Instruct
-        
-        Args:
-            file_path: Path to the JSON file
-        
-        Returns:
-            Model name in HuggingFace format (with /) or None if not found
-        """
+
         filename = file_path.stem
         
         # Try to match common patterns
@@ -2145,19 +1869,7 @@ class VerbalizationEvaluator:
         tokenizer: AutoTokenizer,
         device: str = "cuda"
     ) -> List[float]:
-        """
-        Calculate perplexity for a batch of texts.
-        
-        Args:
-            texts: List of texts to evaluate
-            model: Loaded model
-            tokenizer: Loaded tokenizer
-            batch_size: Batch size for processing
-            device: Device to use ('cuda' or 'cpu')
-        
-        Returns:
-            List of perplexity scores
-        """
+
         batch_size = 1
         model.eval()
         perplexities = []
@@ -2196,22 +1908,7 @@ class VerbalizationEvaluator:
         save_individual_scores: bool = True,
         skip_existing: bool = True
     ) -> Dict[str, Any]:
-        """
-        Calculate perplexity for predictions in a JSON file using the model that generated them.
-        
-        Args:
-            file_path: Path to the JSON file with predictions
-            prediction_key: Key in JSON for predicted text (default: 'prediction')
-            model_name: Model name to use. If None, extracts from filename
-            device: Device to use ('cuda' or 'cpu')
-            batch_size: Batch size for processing
-            use_quantization: Whether to use quantization (saves memory)
-            save_individual_scores: Whether to save perplexity scores back to JSON
-            skip_existing: If True, skip if perplexity already computed
-        
-        Returns:
-            Dictionary with perplexity statistics by language
-        """
+
         print(f"\nCalculating perplexity for: {file_path.name}")
         
         # Load data
@@ -2337,23 +2034,7 @@ class VerbalizationEvaluator:
         save_individual_scores: bool = True,
         skip_existing: bool = True
     ) -> Dict[str, Dict[str, Any]]:
-        """
-        Calculate perplexity for multiple JSON files.
-        
-        Each file is processed with the model that generated its predictions
-        (extracted from the filename).
-        
-        Args:
-            file_paths: List of paths to JSON files
-            prediction_key: Key in JSON for predicted text
-            device: Device to use ('cuda' or 'cpu')
-            batch_size: Batch size for processing
-            save_individual_scores: Whether to save scores back to JSON files
-            skip_existing: If True, skip files where perplexity is already computed
-        
-        Returns:
-            Dictionary mapping file names to their perplexity results
-        """
+
         all_results = {}
         
         for file_path in file_paths:

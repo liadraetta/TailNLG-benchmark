@@ -63,7 +63,6 @@ class MockXCOMETScorer(BaseXCOMETScorer):
         score = random.uniform(0.5, 0.95)
         
         # Generate mock error spans
-        # Example: [{'text': 'ist bei', 'confidence': 0.40954849123954773, 'severity': 'critical', 'start': 13, 'end': 21}, ...]
         error_spans = self._generate_mock_error_spans(translation_text)
         
         # Prepare prompt for logging

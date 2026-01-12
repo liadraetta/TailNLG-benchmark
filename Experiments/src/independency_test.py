@@ -77,7 +77,6 @@ class IndependentExtrinsic:
         ind_dict['p_value'] = np.mean(ind_dict['p_value'])
 
         return ind_dict
-#bertscore.compute(predictions=predictions, references=references, model_type="distilbert-base-uncased")
 
 
 class IndependentIntrinsic:
@@ -135,19 +134,7 @@ class IndependentIntrinsic:
         tokenizer: AutoTokenizer,
         device: str = "mps"
         ) -> List[float]:
-        """
-        Calculate perplexity for a batch of texts.
-        
-        Args:
-            texts: List of texts to evaluate
-            model: Loaded model
-            tokenizer: Loaded tokenizer
-            batch_size: Batch size for processing
-            device: Device to use ('cuda' or 'cpu')
-        
-        Returns:
-            List of perplexity scores
-        """
+
         batch_size = 1
         model.eval()
         perplexities = []
@@ -225,7 +212,6 @@ class IndependentIntrinsic:
             ind_dict['p_value'] = np.mean(ind_dict['p_value'])
 
         return ind_dict
-#bertscore.compute(predictions=predictions, references=references, model_type="distilbert-base-uncased")
 
 
 

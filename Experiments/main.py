@@ -21,7 +21,6 @@ def mainTestWebNLGLoader():
     print(f"Merged - Test samples: {len(merged_data['test'])}")
     print()
     
-    # Esempio 2: Carica dataset separati per lingua
     print("Loading separated datasets...")
     separated_data = WebNLGLoader.load_webnlg_dataset(languages=['en', 'es', 'it'], method="separated")
     for lang in separated_data:
@@ -30,12 +29,10 @@ def mainTestWebNLGLoader():
               f"Test: {len(separated_data[lang]['test'])}")
     print()
     
-    # Esempio 3: Carica solo una lingua
     print("Loading only English dataset...")
     en_data = WebNLGLoader.load_webnlg_dataset(languages=['en'], method="merged")
     print(f"English - Train samples: {len(en_data['train'])}")
     
-    # Mostra un esempio di dato
     if en_data['test']:
         print("\nSample entry:")
         sample = en_data['test'][1000]
@@ -49,11 +46,7 @@ def generateTailNLG():
     # Load merged WebNLG dataset for fine-tuning
     print("Loading merged WebNLG dataset for all languages...")
     merged_webnlg_dataset = WebNLGLoader.load_webnlg_dataset(languages=['en', 'es', 'it'], method="merged")
-    #merged_webnlg_dataset = {
-    #    'train': merged_webnlg_dataset['train'][:100],
-    #    'dev': merged_webnlg_dataset['dev'][:50],
-    #    'test': merged_webnlg_dataset['test'][:50]
-    #}
+
 
     print(f"Merged - Train samples: {len(merged_webnlg_dataset['train'])}")
     print(f"Merged - Dev samples: {len(merged_webnlg_dataset['dev'])}")
@@ -67,7 +60,6 @@ def generateTailNLG():
     for key, value in sample.items():
         print(f"  {key}: {value}")
 
-    #longtail_webnlg_dataset = longtail_webnlg_dataset[:15]  # Use a subset for testing
 
     for model_name in MODELS:
         print(f"\nTesting model: {model_name}")
@@ -173,41 +165,18 @@ def generateWebNLG():
         handler.destroy_model()
 
 def postediting(test_set='TailNLG'):
-    """
-    Post-edit verbalizations to clean common formatting issues.
-    
-    Creates a new 'prediction_pe' (post-edited) field in each JSON entry
-    while preserving the original 'prediction' field.
-    
-    Cleaning rules:
-    1. If verbalization starts with '[', extract only content within square brackets
-    2. If verbalization contains '\\n\\n', take only content after the last occurrence
-    3. Remove prefix phrases: "La verbalizzazione finale è:", "La verbalización final es:", "The final verbalization is:"
-    4. Remove surrounding brackets if text starts with '[' and ends with ']'
-    
-    Args:
-        test_set: 'TailNLG' or 'WebNLG' - determines which files to process
-    """    
+
     # Determine file prefix based on test set
     test_set_prefix = "tail_" if test_set == "TailNLG" else "web_"
     
     def clean_verbalization(text: str) -> str:
-        """
-        Clean a single verbalization according to the rules.
-        
-        Args:
-            text: Original verbalization text
-            
-        Returns:
-            Cleaned verbalization text
-        """
+
         if not isinstance(text, str):
             return text
         
         original = text
         changed = False
         
-        # Rule 1: If starts with '[', extract content within square brackets
         if text.startswith('['):
             # Find matching closing bracket
             match = re.match(r'^\[(.*?)\]', text, re.DOTALL)
@@ -238,7 +207,6 @@ def postediting(test_set='TailNLG'):
                 print(f"    [Prefix] Cleaned: '{old_text[:50]}...' -> '{text[:50]}...'")
                 break  # Only match one pattern
         
-        # rimuovi [ e ]
         if text.startswith('[') and text.endswith(']'):
             old_text = text
             text = text[1:-1].strip()
@@ -372,21 +340,9 @@ def evaluate(test_set='TailNLG', metrics=None):
                 skip_existing=True
             )
 
-            #result = evaluator.calculate_perplexity_for_multiple_files(
-            #    file_paths=all_files,
-            #    prediction_key='prediction_pe',
-            #    skip_existing=False 
-            #)
+
             print("\n✓ Evaluation completed.")
 
-            # Save results with test set in filename
-            #(output_dir / "eval").mkdir(parents=True, exist_ok=True)
-            #results_path = output_dir / f"eval/evaluation_results_{test_set.lower()}_{model_safe_name}.json"
-            #summary_path = output_dir / f"eval/evaluation_summary_{test_set.lower()}_{model_safe_name}.txt"
-            
-            #VerbalizationEvaluator.save_results(results, results_path)
-            #summary = VerbalizationEvaluator.summarize_results(results, summary_path)
-            #print("\n" + summary)
         else:
             print(f"No {test_set} files found for evaluation")
             print(f"Expected files with prefix: {test_set_prefix}*_{model_safe_name}.json")
@@ -467,12 +423,7 @@ def analyze_statistics(test_set='TailNLG'):
                     
                     output_txt = stats_dir / f"statistics_{method}_{test_set.lower()}_{model_safe_name}.txt"
                     VerbalizationEvaluator.format_statistics_tables(stats, output_path=output_txt)
-                    
-                    # Save to JSON for further processing
-                    #output_json = stats_dir / f"statistics_{method}_{test_set.lower()}_{model_safe_name}.json"
-                    #with open(output_json, 'w', encoding='utf-8') as f:
-                    #    json.dump(stats, f, indent=2, ensure_ascii=False)
-                    
+
                     print(f"\n✓ Statistics saved to:")
                     print(f"  - {output_txt}")
                     #print(f"  - {output_json}")
@@ -507,27 +458,7 @@ def analyze_statistics(test_set='TailNLG'):
 
   
 if __name__ == "__main__":
-    # Test WebNLG Loader
-    #mainTestWebNLGLoader()
-    
-    # Generate verbalizations for TailNLG
-    #generateTailNLG()
-    
-    # Generate verbalizations for WebNLG
-    #generateWebNLG()
-    
-    # Post-edit verbalizations for TailNLG (clean formatting issues)
-    #postediting(test_set='TailNLG')
-    
-    # Post-edit verbalizations for WebNLG
-    #postediting(test_set='WebNLG')
-    
-    # Evaluate TailNLG results
-    #evaluate(test_set='TailNLG', metrics=['bertscore_rescaled', 'bertscore'])
-    
-    # Evaluate WebNLG results
-    #evaluate(test_set='WebNLG',  metrics=['bertscore_rescaled', 'bleu', 'chrf', 'rouge1', 'rouge2', 'rougeL'])
-    
+
     # Analyze statistics for TailNLG
     analyze_statistics(test_set='TailNLG')
     

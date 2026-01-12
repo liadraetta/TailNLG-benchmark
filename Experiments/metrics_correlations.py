@@ -23,20 +23,11 @@ def analyze_metric_correlations(test_set='TailNLG'):
     
     # Define metric pairs to analyze
     metric_pairs = [
-        #('bertscore', 'bertscore_rescaled'),
         ('bertscore_rescaled', 'bleu'),
-        #('bertscore_rescaled', 'chrf'),
-        #('bertscore_rescaled', 'meteor'),
         ('bertscore_rescaled', 'rouge1'),
         ('bertscore_rescaled', 'rouge2'),
         ('bertscore_rescaled', 'rougeL'),
-        #('bleu', 'chrf'),
-        #('bleu', 'meteor'),
-        #('meteor', 'rouge1'),
-        #('rouge1', 'rouge2'),
-        #('rouge1', 'rougeL'),
-        #('perplexity', 'bertscore_rescaled'),
-        #('perplexity', 'bleu')
+
     ]
     
     for model_name in MODELS:
@@ -82,15 +73,7 @@ def analyze_metric_correlations(test_set='TailNLG'):
                             metric2=metric2,
                             group_by=None
                         )
-                        
-                        # Compute correlation by language
-                        #by_language_corr = VerbalizationEvaluator.compute_metric_correlations(
-                        #    file_path=file_path,
-                        #    metric1=metric1,
-                        #    metric2=metric2,
-                        #    group_by='language'
-                        #)
-                        
+
                         # Store results
                         pair_key = f"{metric1}_vs_{metric2}"
                         all_correlations[pair_key] = {
@@ -107,10 +90,6 @@ def analyze_metric_correlations(test_set='TailNLG'):
                 
                 # Save all correlations to JSON
                 if all_correlations:
-                    #output_json = corr_dir / f"correlations_{method}_{test_set.lower()}_{model_safe_name}.json"
-                    #with open(output_json, 'w', encoding='utf-8') as f:
-                    #    json.dump(all_correlations, f, indent=2, ensure_ascii=False)
-                    
                     # Create a summary text file
                     output_txt = corr_dir / f"correlations_{method}_{test_set.lower()}_{model_safe_name}.txt"
                     with open(output_txt, 'w', encoding='utf-8') as f:
@@ -133,16 +112,7 @@ def analyze_metric_correlations(test_set='TailNLG'):
                                 f.write(f"\nOverall (n={overall['n']}):\n")
                                 f.write(f"  Pearson r:  {overall['pearson']['r']:>6.3f} (p={overall['pearson']['p_value']:.4f}) [{overall['pearson']['interpretation']}]\n")
                                 f.write(f"  Spearman ρ: {overall['spearman']['rho']:>6.3f} (p={overall['spearman']['p_value']:.4f}) [{overall['spearman']['interpretation']}]\n")
-                            
-                            # By language
-                            #f.write(f"\nBy Language:\n")
-                            #for lang in ['en', 'es', 'it']:
-                            #    if lang in correlations['by_language']:
-                            #        lang_corr = correlations['by_language'][lang]
-                            #        if lang_corr['pearson']['r'] is not None:
-                            #            f.write(f"  {lang} (n={lang_corr['n']}):\n")
-                            #            f.write(f"    Pearson r:  {lang_corr['pearson']['r']:>6.3f} (p={lang_corr['pearson']['p_value']:.4f}) [{lang_corr['pearson']['interpretation']}]\n")
-                            #            f.write(f"    Spearman ρ: {lang_corr['spearman']['rho']:>6.3f} (p={lang_corr['spearman']['p_value']:.4f}) [{lang_corr['spearman']['interpretation']}]\n")
+
                         
                         f.write("\n" + "="*100 + "\n")
                     

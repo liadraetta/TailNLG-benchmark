@@ -42,7 +42,6 @@ for metric in metrics:
     for model in paths:
         for lang in langs:
             results = my_tester.test_independency_intrinsic(path=paths[model]['tail'],
-                                                            #path_b=paths[model]['web'],
                                                   metric=metric,
                                                   lang=lang,
                                                   sample=500)

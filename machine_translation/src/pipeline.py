@@ -485,9 +485,6 @@ class TranslationPipeline:
             # Save incrementally after processing each record
             if record_updated and self.output_dir:
                 PipelineUtils.save_incremental(record, self.output_dir)
-                # Delay between records
-                #self.logger.info("  Waiting 15 seconds before next record...")
-                #time.sleep(15)
         
         self.logger.info(f"\nxTower processing completed: {processed_count} translations analyzed, {skipped_count} skipped")
         return all_records
